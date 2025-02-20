@@ -1,11 +1,14 @@
 // src/AppleMusicAuth.types.ts
 
-export type AppleMusicAuthStatus = 
-  | 'authorized'
-  | 'denied'
-  | 'notDetermined'
-  | 'restricted'
-  | 'unknown';
+// Create the React context with a default value of undefined
+import { createContext } from "react";
+
+export type AppleMusicAuthStatus =
+  | "authorized"
+  | "denied"
+  | "notDetermined"
+  | "restricted"
+  | "unknown";
 
 export type TokenRequestOptions = {
   ignoreCache?: boolean;
@@ -36,7 +39,6 @@ export interface AppleMusicAuthContext {
   isAuthenticating: boolean;
   error: AppleMusicAuthError | null;
 }
-
-// Create the React context with a default value of undefined
-import { createContext } from 'react';
-export const AppleMusicAuthContextInstance = createContext<AppleMusicAuthContext | undefined>(undefined); 
+export const AppleMusicAuthContextInstance = createContext<
+  AppleMusicAuthContext | undefined
+>(undefined);
