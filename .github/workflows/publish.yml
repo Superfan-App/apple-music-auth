@@ -1,0 +1,55 @@
+name: Publish Package
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          registry-url: 'https://registry.npmjs.org'
+          scope: '@superfan-app'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Build plugin
+        run: npm run build plugin
+
+      - name: Increment version
+        id: version
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          
+          # Get the new version number
+          NEW_VERSION=$(npm version patch --no-git-tag-version)
+          echo "new_version=$NEW_VERSION" >> $GITHUB_OUTPUT
+          
+          # Stage the package.json changes
+          git add package.json
+          
+          # Commit and tag
+          git commit -m "Bump version to $NEW_VERSION [skip ci]"
+          git tag $NEW_VERSION
+          
+          # Push changes and tag
+          git push
+          git push --tags
+
+      - name: Publish package
+        run: npm publish --access public
+
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

@@ -1,0 +1,8 @@
+# Test files within included directories
+__mocks__
+__tests__
+
+# Config files
+.env
+
+.github/

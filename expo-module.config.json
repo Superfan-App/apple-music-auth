@@ -1,0 +1,14 @@
+{
+  "name": "apple-music-oauth",
+  "platforms": [
+    "ios"
+  ],
+  "ios": {
+    "modules": [
+      "AppleMusicOauthModule"
+    ],
+    "appDelegateSubscribers": [
+      "AppleMusicAuthDelegate"
+    ]
+  }
+}
