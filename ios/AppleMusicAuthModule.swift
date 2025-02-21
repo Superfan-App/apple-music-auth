@@ -31,4 +31,4 @@ public class AppleMusicAuthModule: Module {
             AppleMusicAuth.clearTokenCache()
         }
     }
-} 
+}

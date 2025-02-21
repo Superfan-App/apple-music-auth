@@ -2,13 +2,13 @@ import Foundation
 import MusicKit
 import ExpoModulesCore
 
-class AppleMusicTokenProvider: MusicUserTokenProvider, MusicDeveloperTokenProvider {
+public final class AppleMusicTokenProvider {
     private var developerTokenCache: String?
     private var userTokenCache: [String: String] = [:]
     
-    // MARK: - Developer Token
+    public init() {}
     
-    func developerToken(options: MusicTokenRequestOptions) async throws -> String {
+    public func cachedDeveloperToken(options: MusicTokenRequestOptions) async throws -> String {
         // Return cached token if available and caching is not ignored
         if !options.contains(.ignoreCache), let cachedToken = developerTokenCache {
             return cachedToken
@@ -20,9 +20,7 @@ class AppleMusicTokenProvider: MusicUserTokenProvider, MusicDeveloperTokenProvid
         return token
     }
     
-    // MARK: - User Token Caching Helper
-    
-    func userToken(for developerToken: String, options: MusicTokenRequestOptions) async throws -> String {
+    public func cachedUserToken(for developerToken: String, options: MusicTokenRequestOptions) async throws -> String {
         // Ensure user is authorized
         guard MusicAuthorization.currentStatus == .authorized else {
             throw MusicTokenRequestError.permissionDenied
@@ -39,9 +37,7 @@ class AppleMusicTokenProvider: MusicUserTokenProvider, MusicDeveloperTokenProvid
         return token
     }
     
-    // MARK: - Cache Management
-    
-    func clearCache() {
+    public func clearCache() {
         developerTokenCache = nil
         userTokenCache.removeAll()
     }

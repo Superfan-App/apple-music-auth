@@ -25,26 +25,22 @@ enum AppleMusicAuthError: LocalizedError {
 @objc(AppleMusicAuth)
 class AppleMusicAuth: NSObject {
     // MARK: - Static Properties
-    
     static var developerToken: String?
     private static let tokenProvider = AppleMusicTokenProvider()
     
     // MARK: - Authorization Status
-    
     static func getAuthorizationStatus() -> String {
         let status = MusicAuthorization.currentStatus
         return authStatusToString(status)
     }
     
     // MARK: - Request Authorization
-    
     static func requestAuthorization() async throws -> String {
         let status = await MusicAuthorization.request()
         return authStatusToString(status)
     }
     
     // MARK: - Token Management
-    
     static func setDeveloperToken(_ token: String) throws {
         // Basic format validation (JWT has 3 parts separated by dots)
         let components = token.components(separatedBy: ".")
@@ -69,17 +65,15 @@ class AppleMusicAuth: NSObject {
     
     static func getDeveloperToken(ignoreCache: Bool = false) async throws -> String {
         let options: MusicTokenRequestOptions = ignoreCache ? .ignoreCache : []
-        return try await tokenProvider.developerToken(options: options)
+        return try await tokenProvider.cachedDeveloperToken(options: options)
     }
     
     static func getUserToken(ignoreCache: Bool = false) async throws -> String {
         let options: MusicTokenRequestOptions = ignoreCache ? .ignoreCache : []
-        
         // First get the developer token
         let devToken = try await getDeveloperToken(ignoreCache: ignoreCache)
-        
-        // Then get the user token
-        return try await tokenProvider.userToken(for: devToken, options: options)
+        // Then get the user token using the renamed caching method
+        return try await tokenProvider.cachedUserToken(for: devToken, options: options)
     }
     
     static func clearTokenCache() {
@@ -87,7 +81,6 @@ class AppleMusicAuth: NSObject {
     }
     
     // MARK: - Helper Methods
-    
     private static func authStatusToString(_ status: MusicAuthorization.Status) -> String {
         switch status {
         case .authorized:
@@ -113,4 +106,4 @@ class AppleMusicAuth: NSObject {
         }
         return base64
     }
-} 
+}
