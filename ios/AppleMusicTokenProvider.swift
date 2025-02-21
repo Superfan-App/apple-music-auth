@@ -25,7 +25,7 @@ public final class AppleMusicTokenProvider {
         do {
             // If running in simulator and no developer token is cached, throw a specific error
             if isSimulator && developerTokenCache == nil {
-                throw AppleMusicAuthError.tokenError(MusicTokenRequestError(errorDescription: "Developer token requests are not supported in the simulator. Please provide a developer token through the AppleMusicAuthProvider."))
+                throw AppleMusicAuthError.tokenError("Developer token requests are not supported in the simulator. Please provide a developer token through the AppleMusicAuthProvider.")
             }
             
             // Use DefaultMusicTokenProvider to fetch the developer token.
@@ -34,8 +34,8 @@ public final class AppleMusicTokenProvider {
             return token
         } catch {
             print("[AppleMusicAuth] Developer token error details: \(error)")
-            if let musicError = error as? MusicError {
-                print("[AppleMusicAuth] MusicKit error code: \(musicError)")
+            if let musicKitError = error as? MusicKitError {
+                print("[AppleMusicAuth] MusicKit error code: \(musicKitError)")
             }
             throw error
         }
