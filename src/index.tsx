@@ -1,4 +1,4 @@
-// src/AppleMusicAuth.tsx
+// src/index.tsx
 
 import React, { useContext, useState, useCallback, useEffect } from "react";
 
