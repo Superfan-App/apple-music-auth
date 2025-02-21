@@ -69,7 +69,7 @@ class AppleMusicAuth: NSObject {
     
     static func getDeveloperToken(ignoreCache: Bool = false) async throws -> String {
         let options: MusicTokenRequestOptions = ignoreCache ? .ignoreCache : []
-        return try await tokenProvider.getDeveloperToken(options: options)
+        return try await tokenProvider.developerToken(options: options)
     }
     
     static func getUserToken(ignoreCache: Bool = false) async throws -> String {
@@ -79,7 +79,7 @@ class AppleMusicAuth: NSObject {
         let devToken = try await getDeveloperToken(ignoreCache: ignoreCache)
         
         // Then get the user token
-        return try await tokenProvider.getUserToken(for: devToken, options: options)
+        return try await tokenProvider.userToken(for: devToken, options: options)
     }
     
     static func clearTokenCache() {

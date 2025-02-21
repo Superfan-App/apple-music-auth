@@ -8,7 +8,7 @@ class AppleMusicTokenProvider: MusicUserTokenProvider, MusicDeveloperTokenProvid
     
     // MARK: - Developer Token
     
-    func getDeveloperToken(options: MusicTokenRequestOptions) async throws -> String {
+    func developerToken(options: MusicTokenRequestOptions) async throws -> String {
         // Return cached token if available and caching is not ignored
         if !options.contains(.ignoreCache), let cachedToken = developerTokenCache {
             return cachedToken
@@ -22,7 +22,7 @@ class AppleMusicTokenProvider: MusicUserTokenProvider, MusicDeveloperTokenProvid
     
     // MARK: - User Token Caching Helper
     
-    func getUserToken(for developerToken: String, options: MusicTokenRequestOptions) async throws -> String {
+    func userToken(for developerToken: String, options: MusicTokenRequestOptions) async throws -> String {
         // Ensure user is authorized
         guard MusicAuthorization.currentStatus == .authorized else {
             throw MusicTokenRequestError.permissionDenied

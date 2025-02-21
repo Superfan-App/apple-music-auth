@@ -18,11 +18,13 @@ public class AppleMusicAuthModule: Module {
         }
 
         AsyncFunction("getDeveloperToken") { (options: [String: Any]) async throws -> String in
-            return try await AppleMusicAuth.getDeveloperToken(options)
+            let ignoreCache = options["ignoreCache"] as? Bool ?? false
+            return try await AppleMusicAuth.getDeveloperToken(ignoreCache: ignoreCache)
         }
 
         AsyncFunction("getUserToken") { (options: [String: Any]) async throws -> String in
-            return try await AppleMusicAuth.getUserToken(options)
+            let ignoreCache = options["ignoreCache"] as? Bool ?? false
+            return try await AppleMusicAuth.getUserToken(ignoreCache: ignoreCache)
         }
 
         AsyncFunction("clearTokenCache") { () async throws in
