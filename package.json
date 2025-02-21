@@ -1,6 +1,6 @@
 {
   "name": "@superfan-app/apple-music-auth",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Apple Music OAuth module for Expo",
   "main": "src/index.tsx",
   "types": "build/index.d.ts",
