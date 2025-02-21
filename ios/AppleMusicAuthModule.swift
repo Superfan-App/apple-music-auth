@@ -16,5 +16,17 @@ public class AppleMusicAuthModule: Module {
         AsyncFunction("setDeveloperToken") { (token: String) async throws in
             try AppleMusicAuth.setDeveloperToken(token)
         }
+
+        AsyncFunction("getDeveloperToken") { (options: [String: Any]) async throws -> String in
+            return try await AppleMusicAuth.getDeveloperToken(options)
+        }
+
+        AsyncFunction("getUserToken") { (options: [String: Any]) async throws -> String in
+            return try await AppleMusicAuth.getUserToken(options)
+        }
+
+        AsyncFunction("clearTokenCache") { () async throws in
+            AppleMusicAuth.clearTokenCache()
+        }
     }
 } 

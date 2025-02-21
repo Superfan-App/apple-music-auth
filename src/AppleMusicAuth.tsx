@@ -30,7 +30,14 @@ export function AppleMusicAuthProvider({
   // Initialize with developer token if provided
   useEffect(() => {
     if (developerToken) {
-      setDeveloperToken(developerToken);
+      const initializeDeveloperToken = async () => {
+        try {
+          await setDeveloperToken(developerToken);
+        } catch (err) {
+          console.error("[AppleMusicAuth] Failed to set developer token:", err);
+        }
+      };
+      initializeDeveloperToken();
     }
   }, [developerToken]);
 
