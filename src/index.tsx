@@ -70,11 +70,19 @@ export function AppleMusicAuthProvider({
         console.error("[AppleMusicAuth] Authorization error:", err);
 
         const error: AppleMusicAuthError = {
-          type: "authorization_error",
+          type: err instanceof Error && err.message.includes("Not authorized")
+            ? "authorization_denied"
+            : err instanceof Error && err.message.includes("Failed to get Apple Music authorization")
+              ? "authorization_failed"
+              : "authorization_error",
           message: err instanceof Error ? err.message : "Authorization failed",
           details: {
-            error_code: "unknown",
-            recoverable: true,
+            error_code: err instanceof Error && err.message.includes("Not authorized")
+              ? "not_authorized"
+              : err instanceof Error && err.message.includes("Failed to get")
+                ? "auth_failed"
+                : "unknown",
+            recoverable: err instanceof Error && !err.message.includes("Not authorized"), // Only recoverable if not explicitly denied
           },
         };
 
@@ -90,15 +98,24 @@ export function AppleMusicAuthProvider({
       setAuthState((prev) => ({ ...prev, developerToken: token }));
     } catch (err) {
       console.error("[AppleMusicAuth] Developer token error:", err);
-      setError({
+
+      const error: AppleMusicAuthError = {
         type: "token_error",
         message: err instanceof Error ? err.message : "Invalid developer token",
         details: {
-          error_code: "invalid_token",
+          error_code: err instanceof Error && err.message.includes("Invalid JWT format")
+            ? "invalid_format"
+            : err instanceof Error && err.message.includes("Token has expired")
+              ? "token_expired"
+              : err instanceof Error && err.message.includes("Could not decode")
+                ? "decode_failed"
+                : "invalid_token",
           recoverable: false,
         },
-      });
-      throw err;
+      };
+
+      setError(error);
+      throw error;
     }
   }, []);
 
