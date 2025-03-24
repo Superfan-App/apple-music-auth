@@ -20,6 +20,26 @@ enum AppleMusicAuthError: LocalizedError {
             return "Invalid developer token: \(reason)"
         }
     }
+    
+    var failureReason: String? {
+        if case .tokenError(let error) = self {
+            return error.failureReason
+        }
+        return nil
+    }
+    
+    var recoverySuggestion: String? {
+        switch self {
+        case .tokenError(let error):
+            return error.recoverySuggestion
+        case .notAuthorized:
+            return "Please authorize this app to access Apple Music in Settings"
+        case .invalidDeveloperToken:
+            return "Check your developer token configuration"
+        default:
+            return nil
+        }
+    }
 }
 
 @objc(AppleMusicAuth)
@@ -70,10 +90,9 @@ class AppleMusicAuth: NSObject {
     
     static func getUserToken(ignoreCache: Bool = false) async throws -> String {
         let options: MusicTokenRequestOptions = ignoreCache ? .ignoreCache : []
-        // First get the developer token
         let devToken = try await getDeveloperToken(ignoreCache: ignoreCache)
-        // Then get the user token using the renamed caching method
         return try await tokenProvider.cachedUserToken(for: devToken, options: options)
+        // MusicTokenRequestError.permissionDenied propagates through here
     }
     
     static func clearTokenCache() {
