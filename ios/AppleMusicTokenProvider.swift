@@ -47,9 +47,9 @@ public final class AppleMusicTokenProvider {
             let token = try await DefaultMusicTokenProvider().userToken(for: developerToken, options: options)
             userTokenCache[developerToken] = token
             return token
-        } catch is MusicTokenRequestError {
+        } catch let error as MusicTokenRequestError {
             // Pass through MusicTokenRequestError
-            throw
+            throw error
         } catch {
             // Wrap other errors
             throw MusicTokenRequestError.userTokenRequestFailed
