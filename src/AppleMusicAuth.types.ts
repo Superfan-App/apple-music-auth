@@ -14,11 +14,26 @@ export type TokenRequestOptions = {
   ignoreCache?: boolean;
 };
 
+export type AppleMusicAuthErrorType =
+  | "authorization_denied"
+  | "authorization_failed"
+  | "token_error"
+  | "authorization_error";
+
+export type AppleMusicAuthErrorCode =
+  | "not_authorized"
+  | "auth_failed"
+  | "invalid_format"
+  | "token_expired"
+  | "decode_failed"
+  | "invalid_token"
+  | "unknown";
+
 export interface AppleMusicAuthError {
-  type: string;
+  type: AppleMusicAuthErrorType;
   message: string;
   details?: {
-    error_code: string;
+    error_code: AppleMusicAuthErrorCode;
     recoverable: boolean;
   };
 }
@@ -38,7 +53,19 @@ export interface AppleMusicAuthContext {
   clearTokenCache: () => void;
   isAuthenticating: boolean;
   error: AppleMusicAuthError | null;
+  isInitialized: boolean;
 }
 export const AppleMusicAuthContextInstance = createContext<
   AppleMusicAuthContext | undefined
 >(undefined);
+
+export interface AppleMusicAuthHook extends AppleMusicAuthContext {
+  requestAndGetToken: () => Promise<string>;
+}
+
+export interface AppleMusicAuthProviderProps {
+  children: React.ReactNode;
+  developerToken?: string;
+  onAuthorizationChange?: (status: AppleMusicAuthStatus) => void;
+  onError?: (error: AppleMusicAuthError) => void;
+}

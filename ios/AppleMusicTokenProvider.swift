@@ -22,8 +22,19 @@ public final class AppleMusicTokenProvider {
     
     public func cachedUserToken(for developerToken: String, options: MusicTokenRequestOptions) async throws -> String {
         // Ensure user is authorized
-        guard MusicAuthorization.currentStatus == .authorized else {
-            throw MusicTokenRequestError.permissionDenied
+        let authStatus = MusicAuthorization.currentStatus
+        guard authStatus == .authorized else {
+            // Map to appropriate MusicTokenRequestError
+            switch authStatus {
+            case .denied:
+                throw MusicTokenRequestError.permissionDenied
+            case .notDetermined:
+                throw MusicTokenRequestError.userNotSignedIn
+            case .restricted:
+                throw MusicTokenRequestError.privacyAcknowledgementRequired
+            default:
+                throw MusicTokenRequestError.unknown
+            }
         }
         
         // Return cached user token if available
@@ -32,9 +43,17 @@ public final class AppleMusicTokenProvider {
         }
         
         // Use DefaultMusicTokenProvider to fetch the user token.
-        let token = try await DefaultMusicTokenProvider().userToken(for: developerToken, options: options)
-        userTokenCache[developerToken] = token
-        return token
+        do {
+            let token = try await DefaultMusicTokenProvider().userToken(for: developerToken, options: options)
+            userTokenCache[developerToken] = token
+            return token
+        } catch is MusicTokenRequestError {
+            // Pass through MusicTokenRequestError
+            throw
+        } catch {
+            // Wrap other errors
+            throw MusicTokenRequestError.userTokenRequestFailed
+        }
     }
     
     public func clearCache() {

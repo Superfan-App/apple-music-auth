@@ -15,7 +15,24 @@ enum AppleMusicAuthError: LocalizedError {
         case .notAuthorized:
             return "Not authorized to access Apple Music"
         case .tokenError(let error):
-            return error.errorDescription
+            switch error {
+            case .developerTokenRequestFailed:
+                return "developerTokenRequestFailed: \(error.errorDescription ?? "Failed to get developer token")"
+            case .permissionDenied:
+                return "permissionDenied: \(error.errorDescription ?? "Permission denied")"
+            case .privacyAcknowledgementRequired:
+                return "privacyAcknowledgementRequired: \(error.errorDescription ?? "Privacy acknowledgement required")"
+            case .unknown:
+                return "unknown: \(error.errorDescription ?? "Unknown error")"
+            case .userNotSignedIn:
+                return "userNotSignedIn: \(error.errorDescription ?? "User not signed in")"
+            case .userTokenRequestFailed:
+                return "userTokenRequestFailed: \(error.errorDescription ?? "Failed to get user token")"
+            case .userTokenRevoked:
+                return "userTokenRevoked: \(error.errorDescription ?? "User token revoked")"
+            @unknown default:
+                return "unknown: \(error.errorDescription ?? "Unknown error")"
+            }
         case .invalidDeveloperToken(let reason):
             return "Invalid developer token: \(reason)"
         }
@@ -90,9 +107,21 @@ class AppleMusicAuth: NSObject {
     
     static func getUserToken(ignoreCache: Bool = false) async throws -> String {
         let options: MusicTokenRequestOptions = ignoreCache ? .ignoreCache : []
-        let devToken = try await getDeveloperToken(ignoreCache: ignoreCache)
-        return try await tokenProvider.cachedUserToken(for: devToken, options: options)
-        // MusicTokenRequestError.permissionDenied propagates through here
+        
+        // Check authorization status
+        let status = MusicAuthorization.currentStatus
+        guard status == .authorized else {
+            throw AppleMusicAuthError.notAuthorized
+        }
+        
+        do {
+            let devToken = try await getDeveloperToken(ignoreCache: ignoreCache)
+            return try await tokenProvider.cachedUserToken(for: devToken, options: options)
+        } catch let error as MusicTokenRequestError {
+            throw AppleMusicAuthError.tokenError(error)
+        } catch {
+            throw error
+        }
     }
     
     static func clearTokenCache() {
