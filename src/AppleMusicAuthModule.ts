@@ -24,7 +24,6 @@ export declare class AppleMusicAuthModule extends NativeModule {
     options?: TokenRequestOptions,
   ) => Promise<string>;
   readonly getUserToken: (options?: TokenRequestOptions) => Promise<string>;
-  readonly clearTokenCache: () => void;
 }
 
 // This call loads the native module object from the JSI

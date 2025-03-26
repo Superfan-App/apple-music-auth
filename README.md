@@ -135,7 +135,6 @@ Returns:
 - `setDeveloperToken(token: string): void` - Set the developer token
 - `getDeveloperToken(options?: TokenRequestOptions): Promise<string>` - Get the developer token
 - `getUserToken(options?: TokenRequestOptions): Promise<string>` - Get the user token
-- `clearTokenCache(): void` - Clear cached tokens
 - `isAuthenticating: boolean` - Authentication in progress
 - `error: AppleMusicAuthError | null` - Last error
 

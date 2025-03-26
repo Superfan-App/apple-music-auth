@@ -248,15 +248,6 @@ export function AppleMusicAuthProvider({
     [mapNativeError],
   );
 
-  const clearTokenCache = useCallback(() => {
-    AppleMusicAuthModule.clearTokenCache();
-    setAuthState((prev) => ({
-      ...prev,
-      developerToken: undefined,
-      userToken: undefined,
-    }));
-  }, []);
-
   // Add initialization tracking
   useEffect(() => {
     const initialize = async () => {
@@ -291,7 +282,6 @@ export function AppleMusicAuthProvider({
         setDeveloperToken,
         getDeveloperToken,
         getUserToken,
-        clearTokenCache,
         isAuthenticating,
         error,
         isInitialized,

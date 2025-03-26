@@ -26,9 +26,5 @@ public class AppleMusicAuthModule: Module {
             let ignoreCache = options["ignoreCache"] as? Bool ?? false
             return try await AppleMusicAuth.getUserToken(ignoreCache: ignoreCache)
         }
-
-        AsyncFunction("clearTokenCache") { () async throws in
-            AppleMusicAuth.clearTokenCache()
-        }
     }
 }

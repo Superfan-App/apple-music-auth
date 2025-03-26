@@ -3,24 +3,14 @@ import MusicKit
 import ExpoModulesCore
 
 public final class AppleMusicTokenProvider {
-    private var developerTokenCache: String?
-    private var userTokenCache: [String: String] = [:]
-    
     public init() {}
     
-    public func cachedDeveloperToken(options: MusicTokenRequestOptions) async throws -> String {
-        // Return cached token if available and caching is not ignored
-        if !options.contains(.ignoreCache), let cachedToken = developerTokenCache {
-            return cachedToken
-        }
-        
-        // Use DefaultMusicTokenProvider to fetch the developer token.
-        let token = try await DefaultMusicTokenProvider().developerToken(options: options)
-        developerTokenCache = token
-        return token
+    public func getDeveloperToken(options: MusicTokenRequestOptions) async throws -> String {
+        // Use DefaultMusicTokenProvider to fetch the developer token
+        return try await DefaultMusicTokenProvider().developerToken(options: options)
     }
     
-    public func cachedUserToken(for developerToken: String, options: MusicTokenRequestOptions) async throws -> String {
+    public func getUserToken(for developerToken: String, options: MusicTokenRequestOptions) async throws -> String {
         // Ensure user is authorized
         let authStatus = MusicAuthorization.currentStatus
         guard authStatus == .authorized else {
@@ -37,16 +27,9 @@ public final class AppleMusicTokenProvider {
             }
         }
         
-        // Return cached user token if available
-        if !options.contains(.ignoreCache), let cachedToken = userTokenCache[developerToken] {
-            return cachedToken
-        }
-        
         // Use DefaultMusicTokenProvider to fetch the user token.
         do {
-            let token = try await DefaultMusicTokenProvider().userToken(for: developerToken, options: options)
-            userTokenCache[developerToken] = token
-            return token
+            return try await DefaultMusicTokenProvider().userToken(for: developerToken, options: options)
         } catch let error as MusicTokenRequestError {
             // Pass through MusicTokenRequestError
             throw error
@@ -54,10 +37,5 @@ public final class AppleMusicTokenProvider {
             // Wrap other errors
             throw MusicTokenRequestError.userTokenRequestFailed
         }
-    }
-    
-    public func clearCache() {
-        developerTokenCache = nil
-        userTokenCache.removeAll()
     }
 }

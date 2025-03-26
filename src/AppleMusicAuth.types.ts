@@ -50,7 +50,6 @@ export interface AppleMusicAuthContext {
   setDeveloperToken: (token: string) => Promise<void>;
   getDeveloperToken: (options?: TokenRequestOptions) => Promise<string>;
   getUserToken: (options?: TokenRequestOptions) => Promise<string>;
-  clearTokenCache: () => void;
   isAuthenticating: boolean;
   error: AppleMusicAuthError | null;
   isInitialized: boolean;
