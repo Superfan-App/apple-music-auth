@@ -63,6 +63,7 @@ enum AppleMusicAuthError: LocalizedError {
 class AppleMusicAuth: NSObject {
     // MARK: - Static Properties
     static var developerToken: String?
+    // Use the fixed token provider (without protocol conformance)
     private static let tokenProvider = AppleMusicTokenProvider()
     
     // MARK: - Authorization Status

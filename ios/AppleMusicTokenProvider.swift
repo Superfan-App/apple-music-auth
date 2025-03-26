@@ -2,11 +2,12 @@ import Foundation
 import MusicKit
 import ExpoModulesCore
 
-public final class AppleMusicTokenProvider: MusicUserTokenProvider, MusicDeveloperTokenProvider {
+// Remove conformance to MusicUserTokenProvider and MusicDeveloperTokenProvider
+public final class AppleMusicTokenProvider {
     public init() {}
     
     public func developerToken(options: MusicTokenRequestOptions) async throws -> String {
-        // Use DefaultMusicTokenProvider to fetch the developer token, always ignoring cache
+        // Always add .ignoreCache to the options.
         let optionsWithNoCache = options.union(.ignoreCache)
         return try await DefaultMusicTokenProvider().developerToken(options: optionsWithNoCache)
     }
@@ -28,15 +29,12 @@ public final class AppleMusicTokenProvider: MusicUserTokenProvider, MusicDevelop
             }
         }
         
-        // Use DefaultMusicTokenProvider to fetch the user token, always ignoring cache
         let optionsWithNoCache = options.union(.ignoreCache)
         do {
             return try await DefaultMusicTokenProvider().userToken(for: developerToken, options: optionsWithNoCache)
         } catch let error as MusicTokenRequestError {
-            // Pass through MusicTokenRequestError
             throw error
         } catch {
-            // Wrap other errors
             throw MusicTokenRequestError.userTokenRequestFailed
         }
     }
