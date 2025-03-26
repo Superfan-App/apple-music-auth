@@ -10,10 +10,6 @@ export type AppleMusicAuthStatus =
   | "restricted"
   | "unknown";
 
-export type TokenRequestOptions = {
-  ignoreCache?: boolean;
-};
-
 export type AppleMusicAuthErrorType =
   | "authorization_denied"
   | "authorization_failed"
@@ -48,8 +44,8 @@ export interface AppleMusicAuthContext {
   authState: AppleMusicAuthState;
   requestAuthorization: () => Promise<AppleMusicAuthStatus>;
   setDeveloperToken: (token: string) => Promise<void>;
-  getDeveloperToken: (options?: TokenRequestOptions) => Promise<string>;
-  getUserToken: (options?: TokenRequestOptions) => Promise<string>;
+  getDeveloperToken: () => Promise<string>;
+  getUserToken: () => Promise<string>;
   isAuthenticating: boolean;
   error: AppleMusicAuthError | null;
   isInitialized: boolean;

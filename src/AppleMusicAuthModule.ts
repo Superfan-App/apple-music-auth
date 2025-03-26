@@ -1,9 +1,6 @@
 import { requireNativeModule, NativeModule } from "expo-modules-core";
 
-import type {
-  AppleMusicAuthStatus,
-  TokenRequestOptions,
-} from "./AppleMusicAuth.types";
+import type { AppleMusicAuthStatus } from "./AppleMusicAuth.types";
 
 export declare class AppleMusicAuthModule extends NativeModule {
   /**
@@ -20,10 +17,8 @@ export declare class AppleMusicAuthModule extends NativeModule {
 
   // Token Management
   readonly setDeveloperToken: (token: string) => Promise<void>;
-  readonly getDeveloperToken: (
-    options?: TokenRequestOptions,
-  ) => Promise<string>;
-  readonly getUserToken: (options?: TokenRequestOptions) => Promise<string>;
+  readonly getDeveloperToken: () => Promise<string>;
+  readonly getUserToken: () => Promise<string>;
 }
 
 // This call loads the native module object from the JSI

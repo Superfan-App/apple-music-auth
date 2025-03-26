@@ -133,8 +133,8 @@ Returns:
 - `authState: { status: string, developerToken?: string, userToken?: string }`
 - `requestAuthorization(): Promise<string>` - Request user authorization
 - `setDeveloperToken(token: string): void` - Set the developer token
-- `getDeveloperToken(options?: TokenRequestOptions): Promise<string>` - Get the developer token
-- `getUserToken(options?: TokenRequestOptions): Promise<string>` - Get the user token
+- `getDeveloperToken(): Promise<string>` - Get the developer token
+- `getUserToken(): Promise<string>` - Get the user token
 - `isAuthenticating: boolean` - Authentication in progress
 - `error: AppleMusicAuthError | null` - Last error
 
@@ -146,15 +146,6 @@ Possible values for `authState.status`:
 - `'notDetermined'` - User hasn't been asked for permission
 - `'restricted'` - Access is restricted
 - `'unknown'` - Status cannot be determined
-
-### Token Request Options
-
-Options for token requests:
-```typescript
-interface TokenRequestOptions {
-  ignoreCache?: boolean; // Force fetch new token
-}
-```
 
 ## Development Workflow
 

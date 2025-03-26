@@ -7,7 +7,6 @@ import {
   AppleMusicAuthState,
   AppleMusicAuthStatus,
   AppleMusicAuthError,
-  TokenRequestOptions,
   AppleMusicAuthHook,
 } from "./AppleMusicAuth.types";
 import AppleMusicAuthModule from "./AppleMusicAuthModule";
@@ -214,39 +213,31 @@ export function AppleMusicAuthProvider({
     [mapNativeError],
   );
 
-  const getDeveloperToken = useCallback(
-    async (options?: TokenRequestOptions): Promise<string> => {
-      try {
-        const token = await AppleMusicAuthModule.getDeveloperToken(
-          options || {},
-        );
-        setAuthState((prev) => ({ ...prev, developerToken: token }));
-        return token;
-      } catch (err) {
-        console.error("[AppleMusicAuth] Developer token error:", err);
-        const mappedError = mapNativeError(err);
-        setError(mappedError);
-        throw mappedError;
-      }
-    },
-    [mapNativeError],
-  );
+  const getDeveloperToken = useCallback(async (): Promise<string> => {
+    try {
+      const token = await AppleMusicAuthModule.getDeveloperToken();
+      setAuthState((prev) => ({ ...prev, developerToken: token }));
+      return token;
+    } catch (err) {
+      console.error("[AppleMusicAuth] Developer token error:", err);
+      const mappedError = mapNativeError(err);
+      setError(mappedError);
+      throw mappedError;
+    }
+  }, [mapNativeError]);
 
-  const getUserToken = useCallback(
-    async (options?: TokenRequestOptions): Promise<string> => {
-      try {
-        const token = await AppleMusicAuthModule.getUserToken(options || {});
-        setAuthState((prev) => ({ ...prev, userToken: token }));
-        return token;
-      } catch (err) {
-        console.error("[AppleMusicAuth] User token error:", err);
-        const mappedError = mapNativeError(err);
-        setError(mappedError);
-        throw mappedError;
-      }
-    },
-    [mapNativeError],
-  );
+  const getUserToken = useCallback(async (): Promise<string> => {
+    try {
+      const token = await AppleMusicAuthModule.getUserToken();
+      setAuthState((prev) => ({ ...prev, userToken: token }));
+      return token;
+    } catch (err) {
+      console.error("[AppleMusicAuth] User token error:", err);
+      const mappedError = mapNativeError(err);
+      setError(mappedError);
+      throw mappedError;
+    }
+  }, [mapNativeError]);
 
   // Add initialization tracking
   useEffect(() => {

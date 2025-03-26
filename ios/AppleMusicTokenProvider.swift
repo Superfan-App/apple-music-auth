@@ -2,15 +2,16 @@ import Foundation
 import MusicKit
 import ExpoModulesCore
 
-public final class AppleMusicTokenProvider {
+public final class AppleMusicTokenProvider: MusicUserTokenProvider, MusicDeveloperTokenProvider {
     public init() {}
     
-    public func getDeveloperToken(options: MusicTokenRequestOptions) async throws -> String {
-        // Use DefaultMusicTokenProvider to fetch the developer token
-        return try await DefaultMusicTokenProvider().developerToken(options: options)
+    public func developerToken(options: MusicTokenRequestOptions) async throws -> String {
+        // Use DefaultMusicTokenProvider to fetch the developer token, always ignoring cache
+        let optionsWithNoCache = options.union(.ignoreCache)
+        return try await DefaultMusicTokenProvider().developerToken(options: optionsWithNoCache)
     }
     
-    public func getUserToken(for developerToken: String, options: MusicTokenRequestOptions) async throws -> String {
+    public func userToken(for developerToken: String, options: MusicTokenRequestOptions) async throws -> String {
         // Ensure user is authorized
         let authStatus = MusicAuthorization.currentStatus
         guard authStatus == .authorized else {
@@ -27,9 +28,10 @@ public final class AppleMusicTokenProvider {
             }
         }
         
-        // Use DefaultMusicTokenProvider to fetch the user token.
+        // Use DefaultMusicTokenProvider to fetch the user token, always ignoring cache
+        let optionsWithNoCache = options.union(.ignoreCache)
         do {
-            return try await DefaultMusicTokenProvider().userToken(for: developerToken, options: options)
+            return try await DefaultMusicTokenProvider().userToken(for: developerToken, options: optionsWithNoCache)
         } catch let error as MusicTokenRequestError {
             // Pass through MusicTokenRequestError
             throw error

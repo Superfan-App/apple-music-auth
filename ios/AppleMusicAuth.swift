@@ -100,12 +100,17 @@ class AppleMusicAuth: NSObject {
         developerToken = token
     }
     
-    static func getDeveloperToken(ignoreCache: Bool = false) async throws -> String {
-        // Ignore the ignoreCache parameter as we always fetch fresh tokens now
-        return try await tokenProvider.getDeveloperToken(options: [])
+    static func getDeveloperToken() async throws -> String {
+        // If a developer token was manually set, use that one
+        if let token = developerToken {
+            return token
+        }
+        
+        // Otherwise, fetch from the token provider
+        return try await tokenProvider.developerToken(options: .ignoreCache)
     }
     
-    static func getUserToken(ignoreCache: Bool = false) async throws -> String {
+    static func getUserToken() async throws -> String {
         // Check authorization status
         let status = MusicAuthorization.currentStatus
         guard status == .authorized else {
@@ -113,9 +118,8 @@ class AppleMusicAuth: NSObject {
         }
         
         do {
-            // Ignore the ignoreCache parameter as we always fetch fresh tokens now
             let devToken = try await getDeveloperToken()
-            return try await tokenProvider.getUserToken(for: devToken, options: [])
+            return try await tokenProvider.userToken(for: devToken, options: .ignoreCache)
         } catch let error as MusicTokenRequestError {
             throw AppleMusicAuthError.tokenError(error)
         } catch {
