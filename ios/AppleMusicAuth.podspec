@@ -11,9 +11,9 @@ Pod::Spec.new do |s|
   s.author         = package['author']
   s.homepage       = package['homepage']
   s.platforms      = {
-    :ios => '15.0'  # MusicKit requires iOS 15.0+
+    :ios => '15.1'  # MusicKit requires iOS 15.0+
   }
-  s.swift_version  = '5.4'
+  s.swift_version  = '5.9'
   s.source         = { 
     :git => 'https://github.com/superfan-app/apple-music-auth.git',
     :tag => package['version']
